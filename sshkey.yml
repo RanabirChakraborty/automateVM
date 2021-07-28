@@ -1,0 +1,9 @@
+---
+- name: Add keys to the hosts
+  hosts: all
+  tasks:
+    - name: Installing the public key
+      authorized_key:
+        user: cloud-user
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
