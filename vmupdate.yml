@@ -7,11 +7,52 @@
 
     - name: Update yum
       yum:
-        name: "*"
-        state: latest
+              name: "*"
+              state: latest
 
-    - name: Download the apache maven tar file
+    - name: Download Openjdk-11
+      get_url:
+              url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz
+              dest: /opt
+              mode: '0755'
+
+    - name: extract Openjdk-11 tar file
+      unarchive:
+              src: /opt/openjdk-11.0.1_linux-x64_bin.tar.gz
+              dest: /opt
+              remote_src: True
+
+    - name: Removing Openjdk-11 tar file
+      file:
+              path: /opt/openjdk-11.0.1_linux-x64_bin.tar.gz
+              state: absent
+
+    - name: Download the apache maven 3.6.3 tar file
       get_url:
               url: https://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
               dest: /opt
-              mode: '0755' 
+              mode: '0755'
+
+    - name: extract maven-3.6.3 tar file
+      unarchive:
+              src: /opt/apache-maven-3.6.3-bin.tar.gz
+              dest: /opt
+              remote_src: True
+
+    - name: Removing maven-3.6.3 tar file
+      file:
+              path: /opt/apache-maven-3.6.3-bin.tar.gz
+              state: absent
+
+    - name: set environment variable for java and maven
+      blockinfile: 
+        path: /root/.bashrc
+        insertafter: 'EOF'
+        block: |
+                export JAVA_HOME=/opt/jdk-11.0.1
+                export PATH=$PATH:/opt/apache-maven-3.6.3/bin
+        state: present
+
+    - name: source the bashrc file
+      shell: source /root/.bashrc
+      remote_user: cloud-user
