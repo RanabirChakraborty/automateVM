@@ -1,0 +1,17 @@
+---
+- name: Update your VM
+  hosts: all
+  gather_facts: true
+  become: yes
+  tasks:
+
+    - name: Update yum
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Download the apache maven tar file
+      get_url:
+              url: https://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+              dest: /opt
+              mode: '0755' 
