@@ -3,6 +3,10 @@
   hosts: all
   gather_facts: true
   become: yes
+  vars:
+          java_version: 11.0.1
+          maven_version: 3.6.3
+          maven_download_url: https://www-eu.apache.org/dist/maven/maven-{{maven_version.split('.')[0]}}/{{maven_version}}/binaries/apache-maven-{{maven_version}}-bin.tar.gz
   tasks:
 
     - name: Update yum
@@ -10,47 +14,53 @@
               name: "*"
               state: latest
 
-    - name: Download Openjdk-11
+    - name: Download Openjdk-{{java_version}}
       get_url:
-              url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz
+              url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz  #Openjdk links are different form each other, we have to manually put the link here.
               dest: /opt
               mode: '0755'
 
-    - name: extract Openjdk-11 tar file
+    - name: extract Openjdk-{{java_version}} tar file
       unarchive:
-              src: /opt/openjdk-11.0.1_linux-x64_bin.tar.gz
+              src: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
               dest: /opt
               remote_src: True
 
-    - name: Removing Openjdk-11 tar file
+    - name: Removing Openjdk-{{java_version}} tar file
       file:
-              path: /opt/openjdk-11.0.1_linux-x64_bin.tar.gz
+              path: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
               state: absent
 
-    - name: Download the apache maven 3.6.3 tar file
+    - name: Renaming the Openjdk-{{java_version}} file
+      command: mv /opt/jdk-{{java_version}} /opt/java
+
+    - name: Download the apache maven-{{maven_version}} tar file
       get_url:
-              url: https://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+              url: "{{maven_download_url}}"
               dest: /opt
               mode: '0755'
 
-    - name: extract maven-3.6.3 tar file
+    - name: extract maven-{{maven_version}} tar file
       unarchive:
-              src: /opt/apache-maven-3.6.3-bin.tar.gz
+              src: /opt/apache-maven-{{maven_version}}-bin.tar.gz
               dest: /opt
               remote_src: True
 
-    - name: Removing maven-3.6.3 tar file
+    - name: Removing maven-{{maven_version}} tar file
       file:
-              path: /opt/apache-maven-3.6.3-bin.tar.gz
+              path: /opt/apache-maven-{{maven_version}}-bin.tar.gz
               state: absent
+
+    - name: Renaming the maven-{{maven_version}} file
+      command: mv /opt/apache-maven-{{maven_version}} /opt/maven
 
     - name: set environment variable for java and maven
       blockinfile: 
         path: /root/.bashrc
         insertafter: 'EOF'
         block: |
-                export JAVA_HOME=/opt/jdk-11.0.1
-                export PATH="$JAVA_HOME/bin:$PATH:/opt/apache-maven-3.6.3/bin"
+                export JAVA_HOME=/opt/java
+                export PATH="$JAVA_HOME/bin:$PATH:/opt/maven/bin"
         state: present
 
     - name: source the bashrc file
