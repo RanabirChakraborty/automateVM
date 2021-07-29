@@ -50,7 +50,7 @@
         insertafter: 'EOF'
         block: |
                 export JAVA_HOME=/opt/jdk-11.0.1
-                export PATH=$PATH:/opt/apache-maven-3.6.3/bin
+                export PATH="$JAVA_HOME/bin:$PATH:/opt/apache-maven-3.6.3/bin"
         state: present
 
     - name: source the bashrc file
