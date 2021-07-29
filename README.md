@@ -6,4 +6,4 @@ If you don't have Ansible installed in you local machine, please run the [script
 
 You can change your [host](https://github.com/RanabirChakraborty/automateVM/blob/master/inventory) to play with it.
 1. `ansible-playbook -k sshkey.yml` run this to distribute SSH Public Key to your remote host
-2. `ansible-playbook vmupdate,yml` run this to install maven and java in your remote host
+2. `ansible-playbook vmupdate.yml` run this to install maven and java in your remote host
