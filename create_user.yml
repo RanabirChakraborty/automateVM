@@ -1,0 +1,16 @@
+---
+- name: Create your user
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  tasks:
+          - include_vars: users.yml
+
+          - name: Create and add user
+            user: name={{ item.username }} shell=/bin/bash createhome=yes comment='create with ansible'
+            with_items: "{{users}}"
+
+          - name: setup the authorized key
+            authorized_key: user={{ item.username }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+            with_items: "{{users}}"
