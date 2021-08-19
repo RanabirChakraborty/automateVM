@@ -7,10 +7,20 @@
   tasks:
           - include_vars: users.yml
 
+          - group:
+              name: sudo
+              state: present
+
           - name: Create and add user
-            user: name={{ item.username }} shell=/bin/bash createhome=yes comment='create with ansible'
-            with_items: "{{users}}"
+            user: 
+              name: "{{ username }}"
+              shell: /bin/bash
+              createhome: yes 
+              comment: "create with ansible"
+            become: yes
+            become_method: "sudo"
 
           - name: setup the authorized key
-            authorized_key: user={{ item.username }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-            with_items: "{{users}}"
+            authorized_key: 
+              user: "{{ username }}" 
+              key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

@@ -1,4 +1,3 @@
 ---
-users:
-        - username: jboss
-          use_sudo: yes
+username: jboss
+
