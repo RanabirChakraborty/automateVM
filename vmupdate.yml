@@ -18,6 +18,9 @@
               url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz  #Openjdk links are different from each other, we have to manually put the link here.
               dest: /opt
               mode: '0755'
+              group: sudo
+              owner: jboss
+              timeout: 20
 
     - name: extract Openjdk-{{java_version}} tar file
       unarchive:
@@ -38,6 +41,9 @@
               url: "{{maven_download_url}}"
               dest: /opt
               mode: '0755'
+              group: sudo
+              owner: jboss
+              timeout: 20
 
     - name: extract maven-{{maven_version}} tar file
       unarchive:
@@ -53,9 +59,25 @@
     - name: Renaming the maven-{{maven_version}} file
       command: mv /opt/apache-maven-{{maven_version}} /opt/maven
 
+    - name: create jboss user directory
+      file:
+        path: /jboss
+        state: directory
+        mode: '0777'
+        group: sudo
+        owner: jboss
+
+    - name: create .bashrc file
+      file:
+        path: "/jboss/.bashrc"
+        state: touch
+        mode: '0777'
+        group: sudo
+        owner: jboss
+
     - name: set environment variable for java and maven
       blockinfile: 
-        path: /root/.bashrc
+        path: /jboss/.bashrc
         insertafter: 'EOF'
         block: |
                 export JAVA_HOME=/opt/java
@@ -63,5 +85,6 @@
         state: present
 
     - name: source the bashrc file
-      shell: source /root/.bashrc
-      remote_user: cloud-user
+      shell: source /jboss/.bashrc
+      owner: jboss
+      group: sudo
