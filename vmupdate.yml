@@ -53,17 +53,9 @@
               path: /opt/apache-maven-{{maven_version}}-bin.tar.gz
               state: absent
 
-    - name: create {{username}} user directory
-      file:
-        path: /{{username}}
-        state: directory
-        mode: '0777'
-        group: sudo
-        owner: jboss
-
     - name: create .bashrc file
       file:
-        path: "/{{username}}/.bashrc"
+        path: "/.bashrc"
         state: touch
         mode: '0777'
         group: sudo
@@ -71,7 +63,7 @@
 
     - name: set environment variable for java and maven
       blockinfile: 
-        path: /{{username}}/.bashrc
+        path: /.bashrc
         insertafter: 'EOF'
         block: |
                 export JAVA_HOME=/opt/jdk-{{java_version}}
@@ -79,5 +71,5 @@
         state: present
 
     - name: source the bashrc file
-      shell: source /jboss/.bashrc
-      remote_user: jboss
+      shell: source /.bashrc
+      remote_user: "{{username}}"
