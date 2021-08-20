@@ -5,7 +5,7 @@
   gather_facts: true
 
   tasks:
-          - include_vars: users.yml
+          - include_vars: var.yml
 
           - group:
               name: sudo

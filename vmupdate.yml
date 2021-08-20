@@ -6,7 +6,7 @@
 
   tasks:
 
-    - include_vars: version.yml
+    - include_vars: var.yml
 
     - name: Update yum
       yum:
@@ -33,9 +33,6 @@
               path: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
               state: absent
 
-    - name: Renaming the Openjdk-{{java_version}} file
-      command: mv /opt/jdk-{{java_version}} /opt/java
-
     - name: Download the apache maven-{{maven_version}} tar file
       get_url:
               url: "{{maven_download_url}}"
@@ -56,12 +53,9 @@
               path: /opt/apache-maven-{{maven_version}}-bin.tar.gz
               state: absent
 
-    - name: Renaming the maven-{{maven_version}} file
-      command: mv /opt/apache-maven-{{maven_version}} /opt/maven
-
-    - name: create jboss user directory
+    - name: create {{username}} user directory
       file:
-        path: /jboss
+        path: /{{username}}
         state: directory
         mode: '0777'
         group: sudo
@@ -69,7 +63,7 @@
 
     - name: create .bashrc file
       file:
-        path: "/jboss/.bashrc"
+        path: "/{{username}}/.bashrc"
         state: touch
         mode: '0777'
         group: sudo
@@ -77,11 +71,11 @@
 
     - name: set environment variable for java and maven
       blockinfile: 
-        path: /jboss/.bashrc
+        path: /{{username}}/.bashrc
         insertafter: 'EOF'
         block: |
-                export JAVA_HOME=/opt/java
-                export PATH="$JAVA_HOME/bin:$PATH:/opt/maven/bin"
+                export JAVA_HOME=/opt/jdk-{{java_version}}
+                export PATH="$JAVA_HOME/bin:$PATH:/opt/apache-maven-{{maven_version}}/bin"
         state: present
 
     - name: source the bashrc file
