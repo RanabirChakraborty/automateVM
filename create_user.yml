@@ -1,5 +1,5 @@
 ---
-- name: Create your user
+- name: Creating the user
   hosts: all
   become: yes
   gather_facts: true
@@ -19,6 +19,12 @@
               comment: "create with ansible"
             become: yes
             become_method: "sudo"
+
+          - name: add user to sudoers
+            become: yes
+            template:
+              src: sudo.conf.j2
+              dest: /etc/sudoers.d/{{ username }}
 
           - name: setup the authorized key
             authorized_key: 
