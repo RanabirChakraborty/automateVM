@@ -10,48 +10,48 @@
 
     - name: Update yum
       yum:
-              name: "*"
-              state: latest
+        name: "*"
+        state: latest
 
     - name: Download Openjdk-{{java_version}}
       get_url:
-              url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz  #Openjdk links are different from each other, we have to manually put the link here.
-              dest: /opt
-              mode: '0755'
-              group: sudo
-              owner: jboss
-              timeout: 20
+        url: https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_linux-x64_bin.tar.gz  #Openjdk links are different from each other, we have to manually put the link here.
+        dest: /opt
+        mode: '0755'
+        group: sudo
+        owner: jboss
+        timeout: 20
 
     - name: extract Openjdk-{{java_version}} tar file
       unarchive:
-              src: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
-              dest: /opt
-              remote_src: True
+        src: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
+        dest: /opt
+        remote_src: True
 
     - name: Removing Openjdk-{{java_version}} tar file
       file:
-              path: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
-              state: absent
+        path: /opt/openjdk-{{java_version}}_linux-x64_bin.tar.gz
+        state: absent
 
     - name: Download the apache maven-{{maven_version}} tar file
       get_url:
-              url: "{{maven_download_url}}"
-              dest: /opt
-              mode: '0755'
-              group: sudo
-              owner: jboss
-              timeout: 20
+        url: "{{maven_download_url}}"
+        dest: /opt
+        mode: '0755'
+        group: sudo
+        owner: jboss
+        timeout: 20
 
     - name: extract maven-{{maven_version}} tar file
       unarchive:
-              src: /opt/apache-maven-{{maven_version}}-bin.tar.gz
-              dest: /opt
-              remote_src: True
+        src: /opt/apache-maven-{{maven_version}}-bin.tar.gz
+        dest: /opt
+        remote_src: True
 
     - name: Removing maven-{{maven_version}} tar file
       file:
-              path: /opt/apache-maven-{{maven_version}}-bin.tar.gz
-              state: absent
+        path: /opt/apache-maven-{{maven_version}}-bin.tar.gz
+        state: absent
 
     - name: create .bashrc file
       file:

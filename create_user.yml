@@ -5,28 +5,28 @@
   gather_facts: true
 
   tasks:
-          - include_vars: var.yml
+    - include_vars: var.yml
 
-          - group:
-              name: sudo
-              state: present
+    - group:
+        name: sudo
+        state: present
 
-          - name: Create and add user
-            user: 
-              name: "{{ username }}"
-              shell: /bin/bash
-              createhome: yes 
-              comment: "create with ansible"
-            become: yes
-            become_method: "sudo"
+    - name: Create and add user
+      user: 
+        name: "{{ username }}"
+        shell: /bin/bash
+        createhome: yes 
+        comment: "created using ansible"
+      become: yes
+      become_method: "sudo"
 
-          - name: add user to sudoers
-            become: yes
-            template:
-              src: sudo.conf.j2
-              dest: /etc/sudoers.d/{{ username }}
+    - name: add user to sudoers
+      become: yes
+      template:
+        src: sudo.conf.j2
+        dest: /etc/sudoers.d/{{ username }}
 
-          - name: setup the authorized key
-            authorized_key: 
-              user: "{{ username }}" 
-              key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    - name: setup the authorized key
+      authorized_key: 
+        user: "{{ username }}" 
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
